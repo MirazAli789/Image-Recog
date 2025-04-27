@@ -2,6 +2,10 @@
 
 A fully functional web-based application for image recognition that works directly in your browser. This application uses TensorFlow.js and the MobileNet model to recognize objects in images.
 
+## Live Demo
+
+This application is hosted on GitHub Pages and can be accessed at: https://mirazali789.github.io/Image-Recog/
+
 ## Features
 
 - Upload images for recognition
