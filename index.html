@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Recognition App</title>
     <link rel="stylesheet" href="css/styles.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- TensorFlow.js library -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <!-- MobileNet model -->
@@ -12,38 +18,53 @@
 </head>
 <body>
     <div class="container">
-        <h1>Image Recognition App</h1>
+        <div class="app-header">
+            <h1><i class="fas fa-brain"></i>Image Recognizer</h1>
+            <p class="tagline">Advanced image recognition powered by TensorFlow</p>
+        </div>
         
         <div class="upload-section">
             <label for="image-upload" class="upload-label">
-                <div class="upload-btn">Choose Image</div>
+                <div class="upload-btn"><i class="fas fa-upload"></i> Select Image</div>
             </label>
             <input type="file" id="image-upload" accept="image/*" hidden>
-            <p class="or">OR</p>
-            <button id="camera-btn" class="camera-btn">Use Camera</button>
+            <div class="divider">
+                <span>OR</span>
+            </div>
+            <button id="camera-btn" class="camera-btn"><i class="fas fa-camera"></i> Use Camera</button>
         </div>
         
         <div class="preview-section">
             <div class="image-preview">
+                <div class="preview-placeholder" id="preview-placeholder">
+                    <i class="fas fa-image"></i>
+                    <p>Image preview will appear here</p>
+                </div>
                 <img id="preview-image" src="#" alt="Preview" style="display: none;">
                 <canvas id="camera-canvas" style="display: none;"></canvas>
                 <video id="camera-view" autoplay playsinline style="display: none;"></video>
             </div>
-            <button id="analyze-btn" class="analyze-btn" disabled>Analyze Image</button>
-            <button id="capture-btn" class="capture-btn" style="display: none;">Capture Photo</button>
-            <button id="switch-btn" class="switch-btn" style="display: none;">Switch Camera</button>
+            <div class="action-buttons">
+                <button id="analyze-btn" class="analyze-btn" disabled><i class="fas fa-search"></i> Analyze</button>
+                <button id="capture-btn" class="capture-btn" style="display: none;"><i class="fas fa-camera"></i> Capture</button>
+                <button id="switch-btn" class="switch-btn" style="display: none;"><i class="fas fa-sync-alt"></i> Switch</button>
+            </div>
         </div>
         
         <div class="results-section">
-            <h2>Recognition Results</h2>
+            <h2><i class="fas fa-list-ul"></i> Recognition Results</h2>
             <div id="results" class="results">
-                <p class="placeholder">Upload an image to see recognition results</p>
+                <p class="placeholder">Your analysis results will appear here</p>
             </div>
             <div class="loader" id="loader" style="display: none;">
                 <div class="spinner"></div>
                 <p>Analyzing image...</p>
             </div>
         </div>
+        
+        <footer class="app-footer">
+            <p>&copy; 2025 AI Vision |@Miraz</p>
+        </footer>
     </div>
     
     <script src="js/app.js"></script>
