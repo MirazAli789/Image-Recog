@@ -274,7 +274,7 @@ async function analyzeImage() {
                 showError('Error analyzing image. Please try again with a different image.');
                 analyzeBtn.classList.remove('pulse');
             }
-        }, 100);
+        }, 500);
         
     } catch (error) {
         console.error('Error analyzing image:', error);

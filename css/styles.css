@@ -263,18 +263,33 @@ body {
     gap: 15px;
 }
 
-.spinner {
-    border: 3px solid rgba(99, 102, 241, 0.1);
-    border-top: 3px solid var (--primary-color);
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    animation: spin 1s linear infinite;
+/* iOS style loader */
+.ios-loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.loader p {
+.ios-spinner {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid rgba(99, 102, 241, 0.15);
+    border-top-color: var(--primary-color);
+    animation: ios-spin 0.8s linear infinite;
+}
+
+.loader-text {
     font-size: 14px;
     color: var(--primary-color);
+    font-weight: 500;
+    margin-top: 5px;
+}
+
+@keyframes ios-spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Footer */
@@ -324,6 +339,7 @@ body {
     .container {
         margin: 10px;
         border-radius: 10px;
+        max-width: 500px;
     }
     
     .app-header h1 {
@@ -347,9 +363,130 @@ body {
 @media (min-width: 601px) {
     .container {
         transform: translateY(0);
+        max-width: 800px; /* Wider interface for computers */
     }
     
     .container:hover {
         transform: translateY(-5px);
+    }
+    
+    /* Layout adjustments for wider screens */
+    .preview-section {
+        display: flex;
+        gap: 20px;
+    }
+    
+    .image-preview {
+        flex: 1;
+        margin-bottom: 0;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        justify-content: center;
+        width: 150px;
+    }
+    
+    /* Improved upload section layout for wider screens */
+    .upload-section {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .upload-label {
+        width: 48%;
+    }
+    
+    .camera-btn {
+        width: 48%;
+    }
+    
+    .divider {
+        width: auto;
+        margin: 0 15px;
+    }
+    
+    /* Improved results section layout for wider screens */
+    .results {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+    }
+    
+    .result-item {
+        margin-bottom: 0;
+    }
+}
+
+/* For even larger screens */
+@media (min-width: 1024px) {
+    .container {
+        max-width: 1100px; /* Even wider on larger screens */
+    }
+    
+    /* Side-by-side layout for very wide screens */
+    body {
+        padding: 30px;
+    }
+    
+    .container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "header header"
+            "upload upload"
+            "preview results"
+            "footer footer";
+    }
+    
+    .app-header {
+        grid-area: header;
+    }
+    
+    .upload-section {
+        grid-area: upload;
+        padding: 25px 30px;
+    }
+    
+    .preview-section {
+        grid-area: preview;
+        padding: 25px 30px 25px 30px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .image-preview {
+        flex-grow: 1;
+        margin-bottom: 20px;
+        height: auto;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio for better viewing */
+    }
+    
+    .action-buttons {
+        flex-direction: row;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .results-section {
+        grid-area: results;
+        padding: 25px 30px 25px 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .results {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        max-height: 350px;
+    }
+    
+    .app-footer {
+        grid-area: footer;
     }
 }
