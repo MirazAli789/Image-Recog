@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Recognition App</title>
+    <title>AI Vision Pro | Image Recognition</title>
     <link rel="stylesheet" href="css/styles.css">
-    <!-- Google Fonts -->
+    <!-- Google Fonts - Added premium font options -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -19,13 +19,16 @@
 <body>
     <div class="container">
         <div class="app-header">
-            <h1><i class="fas fa-brain"></i>Image Recognizer</h1>
+            <h1><i class="fas fa-brain"></i>AI Vision </h1>
             <p class="tagline">Advanced image recognition powered by TensorFlow</p>
+            <!-- <div class="premium-badge">
+                <i class="fas fa-crown"></i> Premium
+            </div> -->
         </div>
         
         <div class="upload-section">
             <label for="image-upload" class="upload-label">
-                <div class="upload-btn"><i class="fas fa-upload"></i> Select Image</div>
+                <div class="upload-btn"><i class="fas fa-cloud-upload-alt"></i> Select Image</div>
             </label>
             <input type="file" id="image-upload" accept="image/*" hidden>
             <div class="divider">
@@ -36,18 +39,21 @@
         
         <div class="preview-section">
             <div class="image-preview">
-                <div class="preview-placeholder" id="preview-placeholder">
-                    <i class="fas fa-image"></i>
-                    <p>Image preview will appear here</p>
-                </div>
+                <label for="image-upload" class="preview-container">
+                    <div class="preview-placeholder" id="preview-placeholder">
+                        <i class="fas fa-image"></i>
+                        <p>Click to select an image</p>
+                        <span class="hint-text">or use the buttons above</span>
+                    </div>
+                </label>
                 <img id="preview-image" src="#" alt="Preview" style="display: none;">
                 <canvas id="camera-canvas" style="display: none;"></canvas>
                 <video id="camera-view" autoplay playsinline style="display: none;"></video>
             </div>
             <div class="action-buttons">
-                <button id="analyze-btn" class="analyze-btn" disabled><i class="fas fa-search"></i> Analyze</button>
+                <button id="analyze-btn" class="analyze-btn" disabled><i class="fas fa-magic"></i> Analyze Image</button>
                 <button id="capture-btn" class="capture-btn" style="display: none;"><i class="fas fa-camera"></i> Capture</button>
-                <button id="switch-btn" class="switch-btn" style="display: none;"><i class="fas fa-sync-alt"></i> Switch</button>
+                <button id="switch-btn" class="switch-btn" style="display: none;"><i class="fas fa-sync-alt"></i> Switch Camera</button>
             </div>
         </div>
         
@@ -60,12 +66,38 @@
                 <div class="ios-loader">
                     <div class="ios-spinner"></div>
                 </div>
-                <p class="loader-text">Analyzing...</p>
+                <p class="loader-text">Analyzing with AI Vision Pro...</p>
+            </div>
+            
+            <div class="share-section">
+                <div class="share-header">
+                    <i class="fas fa-share-alt"></i>
+                    <h3>Share Results</h3>
+                </div>
+                <div class="share-buttons">
+                    <button class="share-btn" title="Share on Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="share-btn" title="Share on Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </button>
+                    <button class="share-btn" title="Copy to Clipboard">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <button class="share-btn" title="Download Results">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
             </div>
         </div>
         
         <footer class="app-footer">
-            <p>&copy; 2025 AI Vision |@Miraz</p>
+            <p><i class="far fa-copyright"></i> 2025 AI Vision Pro | Developed by @Miraz</p>
+            <div class="footer-links">
+                <a href="#">Privacy</a> • 
+                <a href="#">Terms</a> • 
+                <a href="#">Support</a>
+            </div>
         </footer>
     </div>
     

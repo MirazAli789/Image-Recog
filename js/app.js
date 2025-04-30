@@ -9,10 +9,13 @@ const cameraCanvas = document.getElementById('camera-canvas');
 const captureBtn = document.getElementById('capture-btn');
 const switchBtn = document.getElementById('switch-btn');
 const previewPlaceholder = document.getElementById('preview-placeholder');
+const confidenceValue = document.getElementById('confidence-value');
+const shareButtons = document.querySelectorAll('.share-btn');
 
 let model;
 let mediaStream;
 let facingMode = 'environment';
+let lastPredictions = [];
 
 // Load model and initialize app
 async function loadModel() {
@@ -26,16 +29,161 @@ async function loadModel() {
 }
 
 async function init() {
+    // Show premium welcome effect
+    showPremiumWelcome();
+    
     // Load the model
     await loadModel();
     
+    // Setup event listeners
     imageUpload.addEventListener('change', handleImageUpload);
     cameraBtn.addEventListener('click', toggleCamera);
     analyzeBtn.addEventListener('click', analyzeImage);
     captureBtn.addEventListener('click', captureImage);
     switchBtn.addEventListener('click', switchCamera);
+    
+    // Setup share buttons
+    setupShareButtons();
 }
 
+function showPremiumWelcome() {
+    // Add pulse animation to premium badge
+    const premiumBadge = document.querySelector('.premium-badge');
+    if (premiumBadge) {
+        setTimeout(() => {
+            premiumBadge.classList.add('pulse');
+            setTimeout(() => premiumBadge.classList.remove('pulse'), 2000);
+        }, 1000);
+    }
+    
+    // Animate features on load
+    const featureItems = document.querySelectorAll('.feature-item');
+    if (featureItems.length) {
+        featureItems.forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                item.style.transition = 'all 0.5s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            }, 500 + (index * 150));
+        });
+    }
+}
+
+function setupShareButtons() {
+    shareButtons.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+            // Different share actions based on the button
+            switch (index) {
+                case 0: // Twitter
+                    shareToTwitter();
+                    break;
+                case 1: // Facebook
+                    shareToFacebook();
+                    break;
+                case 2: // Copy results
+                    copyResultsToClipboard();
+                    break;
+                case 3: // Download results
+                    downloadResults();
+                    break;
+            }
+        });
+    });
+}
+
+function shareToTwitter() {
+    if (lastPredictions.length === 0) {
+        showToast('Analyze an image first to share results');
+        return;
+    }
+    
+    const text = `I just identified ${lastPredictions[0].className} with ${(lastPredictions[0].probability * 100).toFixed(1)}% confidence using AI Vision Pro! #AIImageRecognition`;
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+}
+
+function shareToFacebook() {
+    if (lastPredictions.length === 0) {
+        showToast('Analyze an image first to share results');
+        return;
+    }
+    
+    // Facebook sharing dialog
+    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent('Check out what I found with AI Vision Pro!')}`;
+    window.open(url, '_blank');
+}
+
+function copyResultsToClipboard() {
+    if (lastPredictions.length === 0) {
+        showToast('Analyze an image first to copy results');
+        return;
+    }
+    
+    let resultText = 'AI Vision Pro Analysis Results:\n';
+    lastPredictions.forEach((pred, i) => {
+        resultText += `${i + 1}. ${pred.className}: ${(pred.probability * 100).toFixed(1)}% confidence\n`;
+    });
+    
+    navigator.clipboard.writeText(resultText).then(() => {
+        showToast('Results copied to clipboard!');
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+        showToast('Failed to copy results');
+    });
+}
+
+function downloadResults() {
+    if (lastPredictions.length === 0) {
+        showToast('Analyze an image first to download results');
+        return;
+    }
+    
+    let resultText = 'AI Vision Pro Analysis Results:\n\n';
+    lastPredictions.forEach((pred, i) => {
+        resultText += `${i + 1}. ${pred.className}: ${(pred.probability * 100).toFixed(1)}% confidence\n`;
+    });
+    
+    const blob = new Blob([resultText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ai-vision-pro-results.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showToast('Results downloaded!');
+}
+
+function showToast(message) {
+    // Check if a toast already exists and remove it
+    const existingToast = document.querySelector('.toast');
+    if (existingToast) {
+        existingToast.remove();
+    }
+    
+    // Create a new toast
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    // Show and then hide the toast
+    setTimeout(() => {
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 2500);
+    }, 100);
+}
+
+// Function to handle image upload
 function handleImageUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -49,6 +197,16 @@ function handleImageUpload(event) {
         previewPlaceholder.style.display = 'none';
         analyzeBtn.disabled = false;
         
+        // Premium animation effect
+        previewImage.style.transform = 'scale(0.95)';
+        previewImage.style.opacity = '0';
+        
+        setTimeout(() => {
+            previewImage.style.transition = 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            previewImage.style.transform = 'scale(1)';
+            previewImage.style.opacity = '1';
+        }, 50);
+        
         // Ensure proper aspect ratio of the image
         previewImage.onload = function() {
             maintainAspectRatio(previewImage);
@@ -58,6 +216,7 @@ function handleImageUpload(event) {
     reader.readAsDataURL(file);
     
     resetResults();
+    resetConfidenceMeter();
 }
 
 // Function to maintain aspect ratio
@@ -246,6 +405,7 @@ async function analyzeImage() {
     
     loader.style.display = 'flex';
     resultsDiv.innerHTML = '';
+    resetConfidenceMeter();
     
     try {
         let imageElement;
@@ -258,28 +418,46 @@ async function analyzeImage() {
             throw new Error('No image available for analysis');
         }
         
-        // Add subtle pulse animation to the analyze button
+        // Add premium effect to the analyze button
         analyzeBtn.classList.add('pulse');
+        
+        // Premium loader animation with pacing for perceived quality
+        animateConfidenceMeter(20, 300); // Initial quick progress to show responsiveness
         
         // Use a timeout to allow the UI to update before running the model
         setTimeout(async () => {
             try {
+                animateConfidenceMeter(60, 800); // More progress as model processes
+                
                 const predictions = await model.classify(imageElement);
-                loader.style.display = 'none';
-                displayResults(predictions);
-                analyzeBtn.classList.remove('pulse');
+                lastPredictions = predictions; // Store for sharing
+                
+                // Show high confidence once results are ready
+                const maxConfidence = predictions.length > 0 ? 
+                    predictions[0].probability * 100 : 70;
+                
+                animateConfidenceMeter(Math.max(80, maxConfidence), 500);
+                
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    displayResults(predictions);
+                    analyzeBtn.classList.remove('pulse');
+                }, 500);
+                
             } catch (error) {
                 console.error('Error during classification:', error);
+                resetConfidenceMeter();
                 loader.style.display = 'none';
                 showError('Error analyzing image. Please try again with a different image.');
                 analyzeBtn.classList.remove('pulse');
             }
-        }, 500);
+        }, 800); // Slightly longer delay to showcase the premium loader
         
     } catch (error) {
         console.error('Error analyzing image:', error);
         loader.style.display = 'none';
         showError('Error analyzing image. Please try again with a different image.');
+        resetConfidenceMeter();
     }
 }
 
@@ -291,7 +469,7 @@ function displayResults(predictions) {
         return;
     }
     
-    // Add animation delay for each result
+    // Add animation delay for each result with premium styling
     predictions.forEach((prediction, index) => {
         const resultItem = document.createElement('div');
         resultItem.className = 'result-item';
@@ -299,7 +477,7 @@ function displayResults(predictions) {
         
         const className = document.createElement('div');
         className.className = 'result-class';
-        className.textContent = prediction.className;
+        className.innerHTML = `<span>${prediction.className}</span>`;
         
         const probability = document.createElement('div');
         probability.className = 'result-probability';
@@ -309,6 +487,12 @@ function displayResults(predictions) {
         resultItem.appendChild(probability);
         resultsDiv.appendChild(resultItem);
     });
+    
+    // Set the final confidence value based on top prediction
+    if (predictions.length > 0) {
+        const topConfidence = predictions[0].probability * 100;
+        setConfidenceValue(topConfidence);
+    }
 }
 
 function showError(message) {
@@ -317,6 +501,50 @@ function showError(message) {
 
 function resetResults() {
     resultsDiv.innerHTML = '<p class="placeholder">Your analysis results will appear here</p>';
+}
+
+function resetConfidenceMeter() {
+    if (confidenceValue) {
+        confidenceValue.style.width = '0%';
+    }
+}
+
+function setConfidenceValue(value) {
+    if (confidenceValue) {
+        confidenceValue.style.width = `${value}%`;
+        
+        // Change color based on confidence level
+        if (value >= 90) {
+            confidenceValue.style.background = 'linear-gradient(90deg, #10b981, #34d399)';
+        } else if (value >= 70) {
+            confidenceValue.style.background = 'linear-gradient(90deg, #6366f1, #818cf8)';
+        } else if (value >= 50) {
+            confidenceValue.style.background = 'linear-gradient(90deg, #f59e0b, #fbbf24)';
+        } else {
+            confidenceValue.style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
+        }
+    }
+}
+
+function animateConfidenceMeter(targetValue, duration) {
+    if (!confidenceValue) return;
+    
+    const startValue = parseFloat(confidenceValue.style.width) || 0;
+    const startTime = performance.now();
+    
+    function updateValue(timestamp) {
+        const elapsed = timestamp - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const currentValue = startValue + progress * (targetValue - startValue);
+        
+        setConfidenceValue(currentValue);
+        
+        if (progress < 1) {
+            requestAnimationFrame(updateValue);
+        }
+    }
+    
+    requestAnimationFrame(updateValue);
 }
 
 // Initialize the app
