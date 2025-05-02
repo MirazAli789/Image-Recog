@@ -46,6 +46,50 @@ async function init() {
     setupShareButtons();
 }
 
+// Drag-and-drop functionality for both the upload button area and preview container
+const uploadArea = document.getElementById('upload-area');
+const previewContainer = document.querySelector('.preview-container');
+
+// Helper function to handle the drag and drop functionality
+function setupDragAndDrop(element) {
+    if (!element) return;
+    
+    element.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        element.classList.add('drag-over');
+    });
+
+    element.addEventListener('dragleave', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        element.classList.remove('drag-over');
+    });
+
+    element.addEventListener('drop', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        element.classList.remove('drag-over');
+
+        const files = event.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+            if (file.type.startsWith('image/')) {
+                // Update the file input
+                imageUpload.files = files;
+                handleImageUpload({ target: { files: [file] } });
+                showToast('Image loaded successfully');
+            } else {
+                showToast('Please upload a valid image file');
+            }
+        }
+    });
+}
+
+// Setup drag and drop on both elements
+setupDragAndDrop(uploadArea);
+setupDragAndDrop(previewContainer);
+
 function showPremiumWelcome() {
     // Add pulse animation to premium badge
     const premiumBadge = document.querySelector('.premium-badge');

@@ -127,9 +127,39 @@ body {
     z-index: 1;
 }
 
+/* Enhanced upload area with drag-and-drop support */
 .upload-label {
     cursor: pointer;
     width: 100%;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.upload-label.drag-over .upload-btn {
+    background-color: var(--secondary-color);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow), 0 0 0 3px rgba(16, 185, 129, 0.3);
+}
+
+.drag-hint {
+    font-size: 12px;
+    color: var(--gray-color);
+    text-align: center;
+    margin-top: 8px;
+    font-weight: 500;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.upload-label:hover .drag-hint {
+    opacity: 1;
+    color: var(--primary-hover);
+}
+
+.upload-label.drag-over .drag-hint {
+    color: var(--secondary-color);
+    font-weight: 600;
+    opacity: 1;
 }
 
 .upload-btn, .camera-btn, .analyze-btn, .capture-btn, .switch-btn {
@@ -320,6 +350,22 @@ body {
 
 .preview-container .preview-placeholder {
     animation: pulse-hint 2s infinite;
+}
+
+/* Preview container drag and drop styles */
+.preview-container.drag-over .preview-placeholder {
+    background-color: rgba(99, 102, 241, 0.1);
+    box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.preview-container.drag-over .preview-placeholder i {
+    transform: scale(1.2);
+    color: var(--primary-color);
+}
+
+.preview-container.drag-over .preview-placeholder p {
+    color: var(--primary-color);
+    font-weight: 500;
 }
 
 /* Results Section */
@@ -994,4 +1040,39 @@ body {
 
 .footer-links a:hover {
     color: var(--primary-color);
+}
+
+/* Drag-and-Drop Area */
+.drag-drop-area {
+    border: 2px dashed var(--primary-color);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    text-align: center;
+    background-color: rgba(240, 240, 255, 0.5);
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.drag-drop-area p {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.drag-drop-area i {
+    font-size: 24px;
+    opacity: 0.8;
+}
+
+.drag-drop-area:hover {
+    background-color: rgba(240, 240, 255, 0.8);
+    border-color: var(--primary-hover);
+    color: var(--primary-hover);
+}
+
+.drag-drop-area.drag-over {
+    background-color: rgba(99, 102, 241, 0.1);
+    border-color: var(--secondary-color);
+    color: var(--secondary-color);
 }
