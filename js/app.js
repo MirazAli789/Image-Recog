@@ -211,18 +211,61 @@ function showToast(message) {
         existingToast.remove();
     }
     
-    // Create a new toast
+    // Create a new toast with premium styling
     const toast = document.createElement('div');
     toast.className = 'toast';
-    toast.textContent = message;
+    
+    // Use icon for enhanced premium feel
+    toast.innerHTML = `<i class="fas fa-info-circle"></i> <span>${message}</span>`;
+    
+    // Apply premium styles directly to ensure they work regardless of CSS
+    Object.assign(toast.style, {
+        position: 'fixed',
+        top: '-60px', // Start above viewport for animation
+        left: '50%',
+        transform: 'translateX(-50%)',
+        backgroundColor: 'rgba(30, 41, 59, 0.95)',
+        color: 'white',
+        padding: '12px 25px',
+        borderRadius: '30px',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+        zIndex: '10000',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        fontSize: '14px',
+        fontWeight: '500',
+        backdropFilter: 'blur(8px)',
+        opacity: '0',
+        transition: 'all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        maxWidth: '85%',
+        textAlign: 'center'
+    });
+    
+    // Style for the icon
+    const icon = toast.querySelector('i');
+    if (icon) {
+        Object.assign(icon.style, {
+            color: '#6366f1', // Primary color
+            fontSize: '16px'
+        });
+    }
+    
     document.body.appendChild(toast);
     
-    // Show and then hide the toast
+    // Animate in
     setTimeout(() => {
-        toast.classList.add('show');
+        toast.style.opacity = '1';
+        toast.style.top = '20px'; // Final position at top of screen
+        
+        // Automatically hide after delay
         setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 300);
+            toast.style.opacity = '0';
+            toast.style.top = '-60px';
+            
+            // Remove from DOM after animation completes
+            setTimeout(() => toast.remove(), 400);
         }, 2500);
     }, 100);
 }
