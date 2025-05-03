@@ -298,6 +298,9 @@ function handleImageUpload(event) {
         previewImage.onload = function() {
             maintainAspectRatio(previewImage);
         };
+        
+        // Show success toast notification
+        showToast('Image loaded successfully');
     };
     
     reader.readAsDataURL(file);
